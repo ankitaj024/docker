@@ -8,11 +8,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-
-RUN npm install -g @nestjs/cli
-
 # Copy the rest of the app
 COPY . .
+
 
 # Build the app
 RUN npm run build
