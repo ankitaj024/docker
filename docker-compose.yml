@@ -1,13 +1,47 @@
-version: '3.8'
+version: "3.8"
 
 services:
   app:
-    build: .
-    container_name: nestjs-app
+    image: keymouse02323/user-module-app:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+      endpoint_mode: dnsrr
     ports:
-      - '8500:8500'
-    env_file:
-      - .env
-    volumes:
-      - .:/app
-      - /app/node_modules
+      - target: 8500
+        published: 8500
+        protocol: tcp
+        mode: host
+    secrets:
+      - DATABASE_URL
+      - JWT_SECRET
+      - EMAIL_PASSWORD
+      - EMAIL_USER
+      - EMAIL_HOST
+      - EMAIL_PORT
+      - STRIPE_SECRET_KEY
+    environment:
+      PORT: 8500
+      DATABASE_URL_FILE: /run/secrets/DATABASE_URL
+      JWT_SECRET_FILE: /run/secrets/JWT_SECRET
+      EMAIL_PASSWORD_FILE: /run/secrets/EMAIL_PASSWORD
+      EMAIL_USER_FILE: /run/secrets/EMAIL_USER
+      EMAIL_HOST_FILE: /run/secrets/EMAIL_HOST
+      EMAIL_PORT_FILE: /run/secrets/EMAIL_PORT
+      STRIPE_SECRET_KEY_FILE: /run/secrets/STRIPE_SECRET_KEY
+
+secrets:
+  DATABASE_URL:
+    external: true
+  JWT_SECRET:
+    external: true
+  EMAIL_PASSWORD:
+    external: true
+  EMAIL_USER:
+    external: true
+  EMAIL_HOST:
+    external: true
+  EMAIL_PORT:
+    external: true
+  STRIPE_SECRET_KEY:
+    external: true

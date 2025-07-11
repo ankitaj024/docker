@@ -1,22 +1,21 @@
-# Base image
-FROM node:18-alpine
+# Use Debian-based Node.js image for stability
+FROM node:18-slim
 
-# Set working directory
+# Install CA certificates and other necessary dependencies
+RUN apt-get update && \
+    apt-get install -y ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Copy dependencies and install
 COPY package*.json ./
+
 RUN npm install
 
-# Copy the rest of the app
 COPY . .
 
-
-# Build the app
 RUN npm run build
 
-# Expose port
-EXPOSE 3000
+EXPOSE 8500
 
-# Run the app
 CMD ["node", "dist/main"]
